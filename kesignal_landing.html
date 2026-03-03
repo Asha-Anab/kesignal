@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KeSignal — Kenya's Media Intelligence Platform</title>
+  <meta name="description" content="Real-time social listening, media monitoring & audience intelligence built for Kenya. Track every brand mention — across 200+ media sources, in English, Swahili and Sheng." />
+  <style>
+    /* ─── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1A1A1A; background: #fff; line-height: 1.6; }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ─── Tokens ────────────────────────────────────────────── */
+    :root {
+      --green:      #1A7A4A;
+      --darkgreen:  #0F5232;
+      --gold:       #D4A017;
+      --lightbg:    #EAF4EE;
+      --softgold:   #FEF9EE;
+      --grey:       #6B7280;
+      --darkgrey:   #374151;
+      --border:     #E5E7EB;
+      --white:      #FFFFFF;
+      --hero-bg:    #051E10;
+    }
+
+    /* ─── Utilities ─────────────────────────────────────────── */
+    .container   { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    .tag         { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; }
+    .tag-green   { background: var(--lightbg); color: var(--green); }
+    .tag-gold    { background: var(--softgold); color: #92650A; }
+    .btn         { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all 0.18s ease; }
+    .btn-primary { background: var(--gold); color: var(--darkgreen); }
+    .btn-primary:hover { background: #C49010; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,160,23,0.35); }
+    .btn-outline { background: transparent; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+    .btn-outline:hover { background: rgba(255,255,255,0.08); border-color: #fff; }
+    .btn-green  { background: var(--green); color: #fff; }
+    .btn-green:hover { background: var(--darkgreen); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,122,74,0.35); }
+    .section     { padding: 96px 0; }
+    .section-sm  { padding: 64px 0; }
+    .section-title { font-size: clamp(28px, 4vw, 42px); font-weight: 800; line-height: 1.15; }
+    .section-sub   { font-size: 17px; color: var(--grey); margin-top: 14px; max-width: 560px; line-height: 1.7; }
+    .center { text-align: center; }
+    .center .section-sub { margin-left: auto; margin-right: auto; }
+
+    /* ─── NAV ───────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(5, 30, 16, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-size: 22px; font-weight: 900; letter-spacing: -0.5px;
+    }
+    .nav-logo .ke   { color: var(--gold); }
+    .nav-logo .sig  { color: #fff; }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { font-size: 14px; color: rgba(255,255,255,0.72); font-weight: 500; transition: color 0.15s; }
+    .nav-links a:hover { color: #fff; }
+    .nav-cta { display: flex; gap: 10px; align-items: center; }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────── */
+    #hero {
+      background: var(--hero-bg);
+      padding: 160px 0 120px;
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 40%, rgba(26,122,74,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 10% 80%, rgba(212,160,23,0.12) 0%, transparent 60%);
+    }
+    .hero-eyebrow { margin-bottom: 20px; }
+    .hero-title {
+      font-size: clamp(38px, 5.5vw, 72px);
+      font-weight: 900;
+      line-height: 1.08;
+      color: #fff;
+      letter-spacing: -1.5px;
+      max-width: 780px;
+    }
+    .hero-title .hl { color: var(--gold); }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 19px);
+      color: rgba(255,255,255,0.68);
+      margin-top: 22px;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; }
+    .hero-stats {
+      display: flex; gap: 40px; flex-wrap: wrap;
+      margin-top: 72px;
+      padding-top: 40px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-stat-val { font-size: 32px; font-weight: 900; color: var(--gold); }
+    .hero-stat-lbl { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 2px; letter-spacing: 0.5px; }
+    /* floating badge */
+    .hero-badge {
+      position: absolute; right: 80px; top: 200px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 20px 26px;
+      backdrop-filter: blur(8px);
+      width: 300px;
+    }
+    .hero-badge-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 14px; }
+    .hero-badge-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .badge-dot { width: 8px; height: 8px; border-radius: 50%; background: #22C55E; flex-shrink: 0; box-shadow: 0 0 8px #22C55E; }
+    .badge-dot.neg { background: #EF4444; box-shadow: 0 0 8px #EF4444; }
+    .badge-dot.neu { background: #F59E0B; box-shadow: 0 0 8px #F59E0B; }
+    .badge-label { font-size: 12px; color: rgba(255,255,255,0.75); }
+    .badge-bar-wrap { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
+    .badge-bar { height: 4px; border-radius: 4px; }
+    .badge-pct { font-size: 11px; color: rgba(255,255,255,0.5); width: 28px; text-align: right; }
+    .badge-alert { margin-top: 14px; padding: 10px 12px; background: rgba(239,68,68,0.15); border-radius: 8px; border: 1px solid rgba(239,68,68,0.3); }
+    .badge-alert-text { font-size: 11px; color: #FCA5A5; }
+    @media (max-width: 900px) { .hero-badge { display: none; } }
+
+    /* ─── LOGO STRIP ─────────────────────────────────────────── */
+    #logos {
+      background: #F9FAFB;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 28px 0;
+    }
+    .logos-label { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #9CA3AF; margin-bottom: 20px; text-align: center; }
+    .logos-strip { display: flex; gap: 0; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .logo-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      border-right: 1px solid var(--border);
+      font-size: 13px; font-weight: 700; color: #6B7280;
+    }
+    .logo-pill:last-child { border-right: none; }
+    .logo-pill .icon { font-size: 16px; }
+
+    /* ─── WHY KESIGNAL ──────────────────────────────────────── */
+    #why { background: #fff; }
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; margin-top: 60px; }
+    .why-card {
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 26px;
+      transition: box-shadow 0.18s, border-color 0.18s, transform 0.18s;
+    }
+    .why-card:hover { border-color: var(--green); box-shadow: 0 6px 24px rgba(26,122,74,0.1); transform: translateY(-2px); }
+    .why-icon { font-size: 28px; margin-bottom: 16px; }
+    .why-card h3 { font-size: 16px; font-weight: 700; color: var(--darkgreen); margin-bottom: 8px; }
+    .why-card p { font-size: 14px; color: var(--grey); line-height: 1.65; }
+
+    /* ─── FEATURES ───────────────────────────────────────────── */
+    #features { background: var(--lightbg); }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 56px; }
+    .feat-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 26px;
+      border: 1.5px solid rgba(26,122,74,0.12);
+      transition: box-shadow 0.18s, transform 0.18s;
+    }
+    .feat-card:hover { box-shadow: 0 8px 32px rgba(26,122,74,0.12); transform: translateY(-3px); }
+    .feat-num { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 14px; opacity: 0.7; }
+    .feat-card h3 { font-size: 18px; font-weight: 800; color: var(--darkgreen); margin-bottom: 10px; }
+    .feat-card p { font-size: 14px; color: var(--grey); line-height: 1.65; margin-bottom: 18px; }
+    .feat-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .feat-list li { font-size: 13px; color: var(--darkgrey); display: flex; align-items: flex-start; gap: 8px; }
+    .feat-list li::before { content: '✓'; color: var(--green); font-weight: 800; margin-top: 1px; flex-shrink: 0; }
+
+    /* ─── DIFFERENTIATION ───────────────────────────────────── */
+    #diff { background: var(--darkgreen); }
+    .diff-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .diff-copy h2 { color: #fff; }
+    .diff-copy p { color: rgba(255,255,255,0.65); margin-top: 14px; font-size: 17px; }
+    .diff-points { margin-top: 44px; display: flex; flex-direction: column; gap: 20px; }
+    .diff-point { display: flex; gap: 16px; align-items: flex-start; }
+    .diff-point-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(212,160,23,0.18); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .diff-point-body h4 { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .diff-point-body p  { font-size: 13px; color: rgba(255,255,255,0.55); line-height: 1.6; }
+    .diff-visual {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      padding: 28px;
+    }
+    .diff-chart-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+    .diff-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .diff-bar-lbl { font-size: 13px; color: rgba(255,255,255,0.75); width: 130px; flex-shrink: 0; }
+    .diff-bar-outer { flex: 1; height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+    .diff-bar-inner { height: 8px; border-radius: 4px; }
+    .diff-bar-pct { font-size: 12px; color: rgba(255,255,255,0.45); width: 36px; text-align: right; }
+    .diff-mentions { margin-top: 24px; padding: 16px; background: rgba(212,160,23,0.12); border-radius: 12px; border: 1px solid rgba(212,160,23,0.25); }
+    .diff-mentions-title { font-size: 11px; color: rgba(212,160,23,0.8); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+    .mention-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 5px 12px; font-size: 11px; color: rgba(255,255,255,0.7); margin: 3px; }
+    .mention-chip .sent { font-size: 9px; padding: 1px 5px; border-radius: 10px; font-weight: 700; }
+    .sent-pos { background: rgba(34,197,94,0.3); color: #86EFAC; }
+    .sent-neg { background: rgba(239,68,68,0.3); color: #FCA5A5; }
+    .sent-neu { background: rgba(251,191,36,0.3); color: #FDE68A; }
+    @media (max-width: 768px) { .diff-row { grid-template-columns: 1fr; gap: 48px; } }
+
+    /* ─── HOW IT WORKS ──────────────────────────────────────── */
+    #how { background: #F9FAFB; }
+    .steps { display: flex; flex-direction: column; gap: 0; margin-top: 60px; position: relative; }
+    .steps::before {
+      content: ''; position: absolute; left: 28px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(to bottom, var(--green), rgba(26,122,74,0.1));
+    }
+    .step { display: flex; gap: 28px; padding-bottom: 44px; position: relative; }
+    .step:last-child { padding-bottom: 0; }
+    .step-num {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: var(--green); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 900; flex-shrink: 0;
+      border: 4px solid #F9FAFB;
+      position: relative; z-index: 2;
+    }
+    .step-body { padding-top: 10px; }
+    .step-body h3 { font-size: 18px; font-weight: 700; color: var(--darkgreen); margin-bottom: 6px; }
+    .step-body p  { font-size: 14px; color: var(--grey); line-height: 1.65; max-width: 560px; }
+    .step-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .step-chip { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; background: var(--lightbg); color: var(--green); }
+
+    /* ─── CLIENTS ────────────────────────────────────────────── */
+    #clients { background: #fff; }
+    .client-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-top: 56px; }
+    .client-card {
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+    }
+    .client-card:hover { border-color: var(--gold); box-shadow: 0 4px 16px rgba(212,160,23,0.12); transform: translateY(-2px); }
+    .client-card .c-icon { font-size: 30px; margin-bottom: 10px; }
+    .client-card h4 { font-size: 14px; font-weight: 700; color: var(--darkgreen); margin-bottom: 4px; }
+    .client-card p  { font-size: 12px; color: var(--grey); line-height: 1.5; }
+
+    /* ─── PRICING ────────────────────────────────────────────── */
+    #pricing { background: var(--lightbg); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin-top: 56px; align-items: start; }
+    .price-card {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      transition: box-shadow 0.18s, transform 0.18s;
+    }
+    .price-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); transform: translateY(-3px); }
+    .price-card.featured {
+      background: var(--darkgreen);
+      border-color: var(--darkgreen);
+      position: relative;
+    }
+    .price-card.featured * { color: #fff !important; }
+    .price-badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--gold); color: var(--darkgreen) !important; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+    .price-tier { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--grey); margin-bottom: 12px; }
+    .price-card.featured .price-tier { color: rgba(255,255,255,0.55) !important; }
+    .price-amount { font-size: 34px; font-weight: 900; color: var(--darkgreen); line-height: 1; }
+    .price-amount .currency { font-size: 16px; font-weight: 700; vertical-align: super; }
+    .price-amount .period { font-size: 14px; font-weight: 500; color: var(--grey); }
+    .price-card.featured .price-amount { color: var(--gold) !important; }
+    .price-card.featured .price-amount .period { color: rgba(255,255,255,0.5) !important; }
+    .price-desc { font-size: 13px; color: var(--grey); margin: 8px 0 20px; line-height: 1.5; }
+    .price-divider { height: 1px; background: var(--border); margin: 20px 0; }
+    .price-card.featured .price-divider { background: rgba(255,255,255,0.12) !important; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .price-features li { font-size: 13px; color: var(--darkgrey); display: flex; align-items: flex-start; gap: 8px; }
+    .price-features li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; }
+    .price-card.featured .price-features li { color: rgba(255,255,255,0.85) !important; }
+    .price-card.featured .price-features li::before { color: #6EE7B7 !important; }
+    .price-cta { display: block; text-align: center; margin-top: 28px; padding: 13px 0; border-radius: 8px; font-size: 14px; font-weight: 700; background: var(--lightbg); color: var(--green); transition: all 0.15s; }
+    .price-cta:hover { background: var(--green); color: #fff; }
+    .price-card.featured .price-cta { background: var(--gold) !important; color: var(--darkgreen) !important; }
+    .price-card.featured .price-cta:hover { background: #C49010 !important; }
+    .pricing-note { text-align: center; margin-top: 28px; font-size: 13px; color: var(--grey); }
+
+    /* ─── DEMO / WAITLIST FORM ──────────────────────────────── */
+    #demo {
+      background: var(--hero-bg);
+      position: relative; overflow: hidden;
+    }
+    #demo::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 70% at 70% 50%, rgba(26,122,74,0.3) 0%, transparent 70%);
+    }
+    .demo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .demo-copy h2 { color: #fff; }
+    .demo-copy p  { color: rgba(255,255,255,0.6); margin-top: 14px; font-size: 17px; line-height: 1.7; }
+    .demo-perks { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; }
+    .demo-perk { display: flex; align-items: center; gap: 10px; font-size: 14px; color: rgba(255,255,255,0.75); }
+    .demo-perk::before { content: '→'; color: var(--gold); font-weight: 700; }
+    .demo-form {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 36px 32px;
+      backdrop-filter: blur(10px);
+    }
+    .demo-form h3 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .demo-form .sub { font-size: 13px; color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.6); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: 11px 14px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff; font-size: 14px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--gold); }
+    .form-group select option { background: #0F3022; color: #fff; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-submit {
+      width: 100%; padding: 14px; border-radius: 8px;
+      background: var(--gold); color: var(--darkgreen);
+      font-size: 15px; font-weight: 800; border: none; cursor: pointer;
+      transition: all 0.18s; margin-top: 8px;
+    }
+    .form-submit:hover { background: #C49010; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,160,23,0.4); }
+    .form-note { font-size: 11px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 12px; }
+    @media (max-width: 768px) { .demo-row { grid-template-columns: 1fr; gap: 48px; } .form-row { grid-template-columns: 1fr; } }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      background: #030D07;
+      padding: 64px 0 32px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+    .footer-brand .logo { font-size: 24px; font-weight: 900; }
+    .footer-brand .logo .ke  { color: var(--gold); }
+    .footer-brand .logo .sig { color: #fff; }
+    .footer-brand p { font-size: 13px; color: rgba(255,255,255,0.45); margin-top: 12px; line-height: 1.7; max-width: 260px; }
+    .footer-col h4 { font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+    .footer-col a { display: block; font-size: 13px; color: rgba(255,255,255,0.55); margin-bottom: 9px; transition: color 0.15s; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { padding-top: 28px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: gap; gap: 16px; }
+    .footer-bottom p { font-size: 12px; color: rgba(255,255,255,0.3); }
+    .footer-badges { display: flex; gap: 10px; }
+    .footer-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08); }
+    @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+
+    /* ─── MODAL ──────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--hero-bg);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px; padding: 36px 32px; max-width: 480px; width: 90%;
+      position: relative;
+    }
+    .modal h3 { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .modal .sub { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+    .modal-close { position: absolute; top: 16px; right: 20px; font-size: 22px; color: rgba(255,255,255,0.4); cursor: pointer; background: none; border: none; }
+    .modal-close:hover { color: #fff; }
+    .success-msg { display: none; text-align: center; padding: 20px 0; }
+    .success-msg .check { font-size: 48px; margin-bottom: 12px; }
+    .success-msg h4 { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .success-msg p { font-size: 14px; color: rgba(255,255,255,0.55); }
+
+    /* ─── Announcement bar ──────────────────────────────────── */
+    .announce {
+      background: var(--green);
+      text-align: center;
+      padding: 10px 24px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+      font-weight: 500;
+    }
+    .announce strong { color: #fff; }
+    .announce a { color: var(--gold); text-decoration: underline; font-weight: 700; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- Announcement Bar -->
+<div class="announce">
+  🚀 <strong>KeSignal is launching Q3 2026</strong> — Join 40+ brands on the early-access waitlist &nbsp;
+  <a onclick="openModal()">Claim your spot →</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="container nav-inner">
+    <div class="nav-logo"><span class="ke">KE</span><span class="sig">SIGNAL</span></div>
+    <div class="nav-links">
+      <a href="#why">Why KeSignal</a>
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="nav-cta">
+      <a href="#demo" class="btn btn-outline" style="padding: 9px 18px; font-size: 13px;">Log In</a>
+      <a href="#demo" class="btn btn-primary" style="padding: 9px 18px; font-size: 13px;">Request Demo</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container" style="position: relative; z-index: 1;">
+    <div class="hero-eyebrow">
+      <span class="tag tag-gold">🇰🇪 Built for Kenya</span>
+    </div>
+    <h1 class="hero-title">
+      Know what Kenya<br/>is saying about<br/><span class="hl">your brand.</span>
+    </h1>
+    <p class="hero-sub">
+      KeSignal monitors 200+ Kenyan media sources, social platforms, blogs and broadcast channels in real time — processing English, Swahili and Sheng so nothing slips through.
+    </p>
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openModal()" style="font-size: 15px; padding: 15px 32px;">
+        Request Demo &nbsp; →
+      </button>
+      <a href="#features" class="btn btn-outline" style="font-size: 15px; padding: 15px 32px;">
+        See the Platform
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">200+</div>
+        <div class="hero-stat-lbl">Media sources indexed</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">&lt;60s</div>
+        <div class="hero-stat-lbl">Ingestion latency</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">3 langs</div>
+        <div class="hero-stat-lbl">English · Swahili · Sheng</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">10K+</div>
+        <div class="hero-stat-lbl">Kenyan influencers mapped</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">36 mo</div>
+        <div class="hero-stat-lbl">Historical data archive</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating live-signal badge -->
+  <div class="hero-badge" style="z-index: 2;">
+    <div class="hero-badge-title">⚡ Live Sentiment — Safaricom</div>
+    <div class="hero-badge-row">
+      <div class="badge-dot"></div>
+      <span class="badge-label">Positive</span>
+      <div class="badge-bar-wrap"><div class="badge-bar" style="width:62%; background:#22C55E;"></div></div>
+      <span class="badge-pct">62%</span>
+    </div>
+    <div class="hero-badge-row">
+      <div class="badge-dot neu"></div>
+      <span class="badge-label">Neutral</span>
+      <div class="badge-bar-wrap"><div class="badge-bar" style="width:23%; background:#F59E0B;"></div></div>
+      <span class="badge-pct">23%</span>
+    </div>
+    <div class="hero-badge-row">
+      <div class="badge-dot neg"></div>
+      <span class="badge-label">Negative</span>
+      <div class="badge-bar-wrap"><div class="badge-bar" style="width:15%; background:#EF4444;"></div></div>
+      <span class="badge-pct">15%</span>
+    </div>
+    <div class="badge-alert">
+      <div class="badge-alert-text">🚨 Spike detected — Nation Media · 2 min ago</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO STRIP -->
+<section id="logos">
+  <div class="container">
+    <div class="logos-label">Trusted by teams at leading Kenyan organisations</div>
+    <div class="logos-strip">
+      <div class="logo-pill"><span class="icon">🏦</span> KCB Group</div>
+      <div class="logo-pill"><span class="icon">📱</span> Safaricom</div>
+      <div class="logo-pill"><span class="icon">🛒</span> Naivas</div>
+      <div class="logo-pill"><span class="icon">📺</span> Nation Media</div>
+      <div class="logo-pill"><span class="icon">🏛</span> CS Office</div>
+      <div class="logo-pill"><span class="icon">📣</span> Ogilvy EA</div>
+      <div class="logo-pill"><span class="icon">🍺</span> EABL</div>
+      <div class="logo-pill"><span class="icon">✈️</span> Kenya Airways</div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY KESIGNAL -->
+<section id="why" class="section">
+  <div class="container">
+    <div class="center">
+      <span class="tag tag-green">The Case For KeSignal</span>
+      <h2 class="section-title" style="margin-top: 16px;">Global tools weren't built<br/>for the Kenyan internet</h2>
+      <p class="section-sub">
+        Most brands still miss 70% of their online mentions because they rely on tools built for English-only, Western markets. KeSignal was built from the ground up for Nairobi, not New York.
+      </p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🌍</div>
+        <h3>English + Swahili + Sheng</h3>
+        <p>Most mentions of Kenyan brands happen in code-switched language. Global tools flag them as noise. KeSignal's NLP engine was trained on local language patterns — including Sheng slang.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📡</div>
+        <h3>190+ Local Media Sources</h3>
+        <p>Nation Media, Standard, KBC, Citizen, Tuko, Nairobi News and 185 more Kenyan blogs and portals — all indexed, updated in under 60 seconds. No global tool covers this.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🔎</div>
+        <h3>Untagged Mentions Captured</h3>
+        <p>When someone says "KCB line ilikuwa slow jana" without tagging the brand, you still need to know. KeSignal catches these untagged conversations that social media managers miss entirely.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">📊</div>
+        <h3>Intelligence, Not Just Publishing</h3>
+        <p>Hootsuite and Sprout Social are publishing tools. KeSignal is a listening and analytics platform — built to tell you what is happening and why, not to schedule your next post.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">💰</div>
+        <h3>Priced for Kenyan Businesses</h3>
+        <p>Meltwater and Brandwatch cost $10,000–$20,000 per year. KeSignal starts at KES 25,000/month — professional-grade intelligence accessible to Kenyan SMEs, not just multinationals.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🗺️</div>
+        <h3>County-Level Geo Intelligence</h3>
+        <p>KeSignal geo-tags mentions down to the county level — so a Mombasa PR crisis doesn't look the same as a Nairobi complaint. Granular location context built for Kenya's 47 counties.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="section">
+  <div class="container">
+    <div class="center">
+      <span class="tag tag-green">Platform Modules</span>
+      <h2 class="section-title" style="margin-top: 16px;">Everything your brand needs<br/>to stay ahead of the story</h2>
+      <p class="section-sub">Four integrated intelligence modules in one platform. No switching between tools.</p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feat-card">
+        <div class="feat-num">Module 01</div>
+        <h3>Social Listening</h3>
+        <p>Track every mention of your brand, competitors and keywords across all major social platforms — in real time, across all three languages.</p>
+        <ul class="feat-list">
+          <li>Twitter/X, Facebook, TikTok, Instagram, YouTube, LinkedIn</li>
+          <li>WhatsApp public group monitoring</li>
+          <li>Sentiment scoring with confidence levels</li>
+          <li>Crisis spike alerts (SMS, Slack, email)</li>
+          <li>Share of voice vs. competitors</li>
+        </ul>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-num">Module 02</div>
+        <h3>Media Monitoring</h3>
+        <p>Never miss a press mention again. KeSignal indexes 200+ Kenyan print, digital and broadcast outlets — updated continuously.</p>
+        <ul class="feat-list">
+          <li>Nation Media, Standard, KBC, Citizen Digital, Tuko & 190 more</li>
+          <li>Broadcast subtitle parsing (TV & radio)</li>
+          <li>Auto-classified by topic, region & tone</li>
+          <li>Journalist & outlet relationship tracking</li>
+          <li>Daily media digest PDF to your inbox</li>
+        </ul>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-num">Module 03</div>
+        <h3>Audience Intelligence</h3>
+        <p>Understand who is talking, what they care about, and where they sit in Kenya's digital landscape.</p>
+        <ul class="feat-list">
+          <li>10,000+ Kenyan creator profiles mapped</li>
+          <li>Follower authenticity scoring</li>
+          <li>Audience demographics by county & age</li>
+          <li>Topic affinity analysis</li>
+          <li>Trending narratives before they go viral</li>
+        </ul>
+      </div>
+
+      <div class="feat-card">
+        <div class="feat-num">Module 04</div>
+        <h3>PR & Influencer Analytics</h3>
+        <p>Measure the actual impact of every campaign, press release and influencer partnership with hard data.</p>
+        <ul class="feat-list">
+          <li>Campaign coverage tracker</li>
+          <li>Influencer ROI scoring</li>
+          <li>Estimated earned media value (KES)</li>
+          <li>Auto-generated campaign reports (PDF)</li>
+          <li>Influencer discovery & match scoring</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- DIFFERENTIATION / VISUAL -->
+<section id="diff" class="section">
+  <div class="container">
+    <div class="diff-row">
+      <div class="diff-copy">
+        <span class="tag" style="background: rgba(212,160,23,0.2); color: var(--gold);">What makes us different</span>
+        <h2 class="section-title" style="margin-top: 16px;">The only platform that speaks Kenyan</h2>
+        <p class="section-sub">Built by Kenyans, for Kenya. Every model, every data source, every alert was designed around how Kenyan brands and audiences actually communicate.</p>
+        <div class="diff-points">
+          <div class="diff-point">
+            <div class="diff-point-icon">🧠</div>
+            <div class="diff-point-body">
+              <h4>Multilingual NLP Engine</h4>
+              <p>Sentiment and entity models trained on Kenyan social corpora — English, Swahili and Sheng, including brand-specific slang and county dialects.</p>
+            </div>
+          </div>
+          <div class="diff-point">
+            <div class="diff-point-icon">⚡</div>
+            <div class="diff-point-body">
+              <h4>Sub-60-Second Alerts</h4>
+              <p>Apache Kafka-powered pipeline processes millions of signals per hour. Your comms team knows about a crisis before it trends.</p>
+            </div>
+          </div>
+          <div class="diff-point">
+            <div class="diff-point-icon">🗺️</div>
+            <div class="diff-point-body">
+              <h4>Kenya-Specific Entity Graph</h4>
+              <p>Pre-built dictionary of Kenyan brands, politicians, counties, products and media personalities — no manual configuration needed.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="diff-visual">
+        <div class="diff-chart-title">📊 Source coverage breakdown</div>
+        <div class="diff-bar-row">
+          <div class="diff-bar-lbl">Social Media</div>
+          <div class="diff-bar-outer"><div class="diff-bar-inner" style="width:88%; background: var(--green);"></div></div>
+          <div class="diff-bar-pct">88%</div>
+        </div>
+        <div class="diff-bar-row">
+          <div class="diff-bar-lbl">News Portals</div>
+          <div class="diff-bar-outer"><div class="diff-bar-inner" style="width:95%; background: var(--gold);"></div></div>
+          <div class="diff-bar-pct">95%</div>
+        </div>
+        <div class="diff-bar-row">
+          <div class="diff-bar-lbl">Blogs & Forums</div>
+          <div class="diff-bar-outer"><div class="diff-bar-inner" style="width:72%; background: #3B82F6;"></div></div>
+          <div class="diff-bar-pct">72%</div>
+        </div>
+        <div class="diff-bar-row">
+          <div class="diff-bar-lbl">Broadcast</div>
+          <div class="diff-bar-outer"><div class="diff-bar-inner" style="width:60%; background: #7C3AED;"></div></div>
+          <div class="diff-bar-pct">60%</div>
+        </div>
+        <div class="diff-bar-row">
+          <div class="diff-bar-lbl">WhatsApp Groups</div>
+          <div class="diff-bar-outer"><div class="diff-bar-inner" style="width:45%; background: #22C55E;"></div></div>
+          <div class="diff-bar-pct">45%</div>
+        </div>
+        <div class="diff-mentions">
+          <div class="diff-mentions-title">🔴 Live mentions — last 5 minutes</div>
+          <div>
+            <span class="mention-chip">Equity Bank <span class="sent sent-neg">neg</span></span>
+            <span class="mention-chip">M-Pesa fees <span class="sent sent-neg">neg</span></span>
+            <span class="mention-chip">EABL spirits <span class="sent sent-pos">pos</span></span>
+            <span class="mention-chip">KRA returns <span class="sent sent-neu">neu</span></span>
+            <span class="mention-chip">Jumia delivery <span class="sent sent-neg">neg</span></span>
+            <span class="mention-chip">Kenya Airways <span class="sent sent-pos">pos</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="section">
+  <div class="container">
+    <div class="center">
+      <span class="tag tag-green">How It Works</span>
+      <h2 class="section-title" style="margin-top: 16px;">From raw signal to<br/>boardroom-ready intelligence</h2>
+    </div>
+    <div style="max-width: 680px; margin: 0 auto;">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>We connect to every channel</h3>
+            <p>Official API connectors, custom web scrapers, RSS aggregators and broadcast subtitle parsers collect data from 200+ sources every 60 seconds.</p>
+            <div class="step-chips">
+              <span class="step-chip">Twitter/X API</span>
+              <span class="step-chip">Meta API</span>
+              <span class="step-chip">190+ Scrapers</span>
+              <span class="step-chip">RSS Feeds</span>
+              <span class="step-chip">Broadcast</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Our NLP engine processes every signal</h3>
+            <p>Apache Kafka queues every item. Our multilingual NLP models tag language, sentiment, entities, topics and location — in under one second per item.</p>
+            <div class="step-chips">
+              <span class="step-chip">Sentiment</span>
+              <span class="step-chip">Named Entities</span>
+              <span class="step-chip">Topics</span>
+              <span class="step-chip">County Geo-tag</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Intelligence surfaces automatically</h3>
+            <p>Crisis thresholds trigger instant alerts. Trend detectors surface emerging stories. Share of voice updates in real time. Campaign reports auto-build overnight.</p>
+            <div class="step-chips">
+              <span class="step-chip">Crisis Alerts</span>
+              <span class="step-chip">Trend Detection</span>
+              <span class="step-chip">Share of Voice</span>
+              <span class="step-chip">Auto Reports</span>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Your team acts with confidence</h3>
+            <p>Dashboard, Slack alerts, scheduled email digests and REST API — every stakeholder receives intelligence in their preferred format, on any device, in EAT timezone.</p>
+            <div class="step-chips">
+              <span class="step-chip">Web Dashboard</span>
+              <span class="step-chip">Slack / Teams</span>
+              <span class="step-chip">PDF Reports</span>
+              <span class="step-chip">REST API</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TARGET CLIENTS -->
+<section id="clients" class="section">
+  <div class="container">
+    <div class="center">
+      <span class="tag tag-green">Who We Serve</span>
+      <h2 class="section-title" style="margin-top: 16px;">Built for the brands that<br/>shape Kenyan conversations</h2>
+      <p class="section-sub">From fast-growing startups to listed corporations and government communications offices.</p>
+    </div>
+    <div class="client-grid">
+      <div class="client-card">
+        <div class="c-icon">🏦</div>
+        <h4>Banks & Financial Services</h4>
+        <p>Monitor M-Pesa, loans, rates and customer service sentiment. Get ahead of regulatory controversy.</p>
+      </div>
+      <div class="client-card">
+        <div class="c-icon">📱</div>
+        <h4>Telecoms & Tech</h4>
+        <p>Track network complaints before they trend. Measure campaign reach and influencer ROI.</p>
+      </div>
+      <div class="client-card">
+        <div class="c-icon">🛒</div>
+        <h4>FMCG & Retail</h4>
+        <p>Monitor product launches, pricing sentiment and competitor share of voice across 47 counties.</p>
+      </div>
+      <div class="client-card">
+        <div class="c-icon">🏛</div>
+        <h4>Government & Parastatals</h4>
+        <p>Public sentiment on policy, county-level feedback loops and real-time crisis communication.</p>
+      </div>
+      <div class="client-card">
+        <div class="c-icon">📣</div>
+        <h4>PR & Communications Agencies</h4>
+        <p>Multi-client dashboards, white-label PDF reports and campaign tracking for all your accounts.</p>
+      </div>
+      <div class="client-card">
+        <div class="c-icon">✈️</div>
+        <h4>Aviation, Hospitality & Tourism</h4>
+        <p>Track booking sentiment, reputation risks and influencer campaign performance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" class="section">
+  <div class="container">
+    <div class="center">
+      <span class="tag tag-green">Pricing</span>
+      <h2 class="section-title" style="margin-top: 16px;">Professional intelligence<br/>at African prices</h2>
+      <p class="section-sub">No hidden fees. No USD invoicing. All plans billed in KES with local M-Pesa and bank transfer support.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount">
+          <span class="currency">KES</span> 25,000
+          <span class="period">/month</span>
+        </div>
+        <p class="price-desc">For growing brands and SMEs tracking their own name and 1–2 competitors.</p>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>3 tracked keywords / brands</li>
+          <li>Social listening (all platforms)</li>
+          <li>50 media sources</li>
+          <li>Daily email digest</li>
+          <li>7-day data history</li>
+          <li>2 user seats</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#demo" class="price-cta" onclick="openModal()">Get Started</a>
+      </div>
+
+      <!-- Professional (featured) -->
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Professional</div>
+        <div class="price-amount">
+          <span class="currency">KES</span> 65,000
+          <span class="period">/month</span>
+        </div>
+        <p class="price-desc">For brands and agencies needing comprehensive monitoring and weekly reports.</p>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>15 tracked keywords / brands</li>
+          <li>Full social + 200+ media sources</li>
+          <li>Real-time crisis alerts (SMS + Slack)</li>
+          <li>Weekly PDF intelligence report</li>
+          <li>Share of voice analytics</li>
+          <li>Influencer discovery module</li>
+          <li>36-month data archive</li>
+          <li>10 user seats</li>
+          <li>Dedicated onboarding call</li>
+        </ul>
+        <a href="#demo" class="price-cta" onclick="openModal()">Request Demo</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount">
+          <span class="currency">KES</span> 120K+
+          <span class="period">/month</span>
+        </div>
+        <p class="price-desc">For corporates, listed companies and agencies managing multiple brands at scale.</p>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Unlimited tracked keywords</li>
+          <li>Custom source additions on request</li>
+          <li>REST API access</li>
+          <li>White-label PDF reports</li>
+          <li>Multi-brand dashboard</li>
+          <li>Dedicated account manager</li>
+          <li>Custom NLP entity training</li>
+          <li>Unlimited user seats</li>
+          <li>SLA-backed uptime guarantee</li>
+        </ul>
+        <a href="#demo" class="price-cta" onclick="openModal()">Talk to Sales</a>
+      </div>
+
+    </div>
+    <p class="pricing-note">All prices exclude VAT. Annual subscriptions receive 2 months free. M-Pesa Paybill and bank transfer accepted.</p>
+  </div>
+</section>
+
+<!-- DEMO / WAITLIST -->
+<section id="demo" class="section">
+  <div class="container" style="position: relative; z-index: 1;">
+    <div class="demo-row">
+      <div class="demo-copy">
+        <span class="tag tag-gold">Request Early Access</span>
+        <h2 class="section-title" style="margin-top: 16px; color: #fff;">See KeSignal live — with your brand's own data</h2>
+        <p class="demo-copy p">We'll set up a 30-minute live demo using your brand name so you can see real Kenyan mentions, sentiment trends and crisis alerts from day one.</p>
+        <div class="demo-perks">
+          <div class="demo-perk">Live demo with your actual brand keywords</div>
+          <div class="demo-perk">No credit card required to start</div>
+          <div class="demo-perk">14-day free trial for waitlist members</div>
+          <div class="demo-perk">Dedicated onboarding call included</div>
+          <div class="demo-perk">Pricing in KES, M-Pesa payment supported</div>
+        </div>
+      </div>
+      <div class="demo-form">
+        <h3>Book a Live Demo</h3>
+        <p class="sub">We'll reach out within 1 business day to schedule.</p>
+        <div id="formSection">
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" placeholder="Amina" id="fname" />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" placeholder="Ochieng" id="lname" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Work Email</label>
+            <input type="email" placeholder="amina@company.co.ke" id="email" />
+          </div>
+          <div class="form-group">
+            <label>Company / Organisation</label>
+            <input type="text" placeholder="e.g. KCB Group, Ogilvy EA, CS Office" id="company" />
+          </div>
+          <div class="form-group">
+            <label>Your Role</label>
+            <select id="role">
+              <option value="" disabled selected>Select your role</option>
+              <option>Brand Manager</option>
+              <option>Communications / PR Manager</option>
+              <option>Marketing Director</option>
+              <option>C-Suite Executive</option>
+              <option>PR Agency Account Manager</option>
+              <option>Government Communications</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Primary Interest</label>
+            <select id="interest">
+              <option value="" disabled selected>What matters most to you?</option>
+              <option>Social Listening &amp; Brand Mentions</option>
+              <option>Media Monitoring (Press)</option>
+              <option>Crisis Alert System</option>
+              <option>Influencer Analytics</option>
+              <option>Competitor / Share of Voice</option>
+              <option>Full Platform Demo</option>
+            </select>
+          </div>
+          <button class="form-submit" onclick="submitForm()">Book My Demo →</button>
+          <p class="form-note">Your information is never shared with third parties. We hate spam too.</p>
+        </div>
+        <div class="success-msg" id="successMsg">
+          <div class="check">✅</div>
+          <h4>You're on the list!</h4>
+          <p>We'll contact you within 1 business day to schedule your demo. Check your inbox for a confirmation.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo"><span class="ke">KE</span><span class="sig">SIGNAL</span></div>
+        <p>Kenya's media intelligence and social listening platform. Built to help African brands lead — not react — to the conversations that matter.</p>
+        <div style="margin-top: 16px; display: flex; gap: 10px;">
+          <span class="footer-badge">🇰🇪 Nairobi, Kenya</span>
+          <span class="footer-badge">EAT Timezone</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#features">Social Listening</a>
+        <a href="#features">Media Monitoring</a>
+        <a href="#features">Audience Intelligence</a>
+        <a href="#features">PR Analytics</a>
+        <a href="#pricing">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About KeSignal</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+        <a href="#">Press Kit</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <a href="#">API Docs</a>
+        <a href="#">Help Centre</a>
+        <a href="#">Case Studies</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 KeSignal. All rights reserved. · Nairobi, Kenya</p>
+      <div class="footer-badges">
+        <span class="footer-badge">🔒 SSL Secured</span>
+        <span class="footer-badge">GDPR Compliant</span>
+        <span class="footer-badge">99.9% Uptime SLA</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modalBox">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>Join the Waitlist</h3>
+    <p class="sub">Be among the first brands to get access to KeSignal when we launch Q3 2026.</p>
+    <div id="modalFormSection">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your name" id="m-name" />
+      </div>
+      <div class="form-group">
+        <label>Work Email</label>
+        <input type="email" placeholder="you@company.co.ke" id="m-email" />
+      </div>
+      <div class="form-group">
+        <label>Company</label>
+        <input type="text" placeholder="Company name" id="m-company" />
+      </div>
+      <button class="form-submit" onclick="submitModal()">Join Waitlist →</button>
+      <p class="form-note" style="color: rgba(255,255,255,0.35);">No spam. We'll only email you about your demo and platform access.</p>
+    </div>
+    <div class="success-msg" id="modalSuccess">
+      <div class="check">🎉</div>
+      <h4>Welcome to the waitlist!</h4>
+      <p style="color: rgba(255,255,255,0.55);">You'll be among the first to hear when KeSignal opens. We'll be in touch soon.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Modal
+  function openModal() {
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeModalOutside(e) {
+    if (e.target === document.getElementById('modalOverlay')) closeModal();
+  }
+  function submitModal() {
+    const name  = document.getElementById('m-name').value.trim();
+    const email = document.getElementById('m-email').value.trim();
+    if (!name || !email) { alert('Please enter your name and email.'); return; }
+    document.getElementById('modalFormSection').style.display = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+  }
+
+  // Main form
+  function submitForm() {
+    const email   = document.getElementById('email').value.trim();
+    const fname   = document.getElementById('fname').value.trim();
+    const company = document.getElementById('company').value.trim();
+    if (!fname || !email || !company) { alert('Please fill in your name, email and company.'); return; }
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successMsg').style.display = 'block';
+  }
+
+  // Sticky nav colour shift
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(5,30,16,0.98)';
+    } else {
+      nav.style.background = 'rgba(5,30,16,0.96)';
+    }
+  });
+
+  // Animate hero stats on load
+  document.querySelectorAll('.hero-stat-val').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(10px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.hero-stat-val').forEach((el, i) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, i * 100);
+    });
+  }, 400);
+
+  // Live badge pulse
+  setInterval(() => {
+    const badge = document.querySelector('.badge-alert-text');
+    if (!badge) return;
+    const sources = ['Nation Media', 'Standard Digital', 'Citizen TV', 'Twitter/X'];
+    const src = sources[Math.floor(Math.random() * sources.length)];
+    const mins = Math.floor(Math.random() * 5) + 1;
+    badge.textContent = `🚨 Spike detected — ${src} · ${mins} min ago`;
+  }, 4000);
+</script>
+</body>
+</html>
